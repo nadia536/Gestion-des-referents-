@@ -2,82 +2,81 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Gestion des Référents - Direction Usine</title>
+<title>Gestion des Référents</title>
 
 <style>
 body {
-    font-family: Arial;
-    background: #f5f7fa;
-    margin: 0;
+  font-family: Arial;
+  background:#f4f6f9;
+  margin:0;
 }
 
 .header {
-    background: #2f3e50;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-size: 24px;
-    border-radius: 10px;
-    margin: 20px;
+  background:#2c3e50;
+  color:white;
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  border-radius:10px;
+  margin:20px;
 }
 
 .container {
-    background: #fff;
-    margin: 20px;
-    padding: 20px;
-    border-radius: 10px;
+  width:95%;
+  margin:auto;
 }
 
-.inputs {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+.form {
+  background:#f0f0f0;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:20px;
 }
 
-select, input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 160px;
+label {
+  font-size:12px;
+  color:#555;
+}
+
+input, select {
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:5px;
+  width:160px;
 }
 
 button {
-    background: #1e73d8;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #155bb5;
-}
-
-.delete-btn {
-    background: red;
-}
-
-.edit-btn {
-    background: orange;
+  background:#2e6edc;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:5px;
+  cursor:pointer;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  width:100%;
+  border-collapse:collapse;
 }
 
 th {
-    background: #1e73d8;
-    color: white;
-    padding: 10px;
+  background:#2e6edc;
+  color:white;
+  padding:12px;
 }
 
 td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
+  padding:10px;
+  border:1px solid #ddd;
+  text-align:center;
+}
+
+.deleteBtn {
+  background:red;
+  color:white;
+  padding:5px 10px;
+  border:none;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -90,22 +89,24 @@ td {
 
 <div class="container">
 
-<div class="inputs">
+<div class="form">
 
+<div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+
+<div>
+<label>Service</label><br>
 <select id="service">
-<option value="">Service</option>
 <option>Production</option>
 <option>Maintenance</option>
 <option>Magasin</option>
 <option>Méthode</option>
 <option>QHSE</option>
-<option>Qualité</option>
-<option>TPM</option>
-<option>Moyens généraux</option>
 </select>
+</div>
 
+<div>
+<label>Zone</label><br>
 <select id="zone">
-<option value="">Zone</option>
 <option>Préparation</option>
 <option>Monobloc</option>
 <option>Séchoir</option>
@@ -115,9 +116,11 @@ td {
 <option>Emballage</option>
 <option>Toutes les zones</option>
 </select>
+</div>
 
+<div>
+<label>Poste</label><br>
 <select id="poste">
-<option value="">Poste</option>
 <option>Opérateur</option>
 <option>Technicien</option>
 <option>Technicien TPM</option>
@@ -126,15 +129,28 @@ td {
 <option>Superviseur</option>
 <option>Responsable</option>
 </select>
+</div>
 
-<input type="text" id="referent" placeholder="Nom référent">
+<div>
+<label>Nom référent</label><br>
+<input type="text" id="nom" placeholder="Nom référent">
+</div>
+
+<div>
+<label>Fonction</label><br>
 <input type="text" id="fonction" placeholder="Fonction">
+</div>
 
-<button onclick="ajouterReferent()">Ajouter</button>
+<div>
+<br>
+<button onclick="ajouter()">Ajouter</button>
+</div>
 
 </div>
 
-<table id="table">
+</div>
+
+<table>
 <thead>
 <tr>
 <th>Service</th>
@@ -145,71 +161,71 @@ td {
 <th>Action</th>
 </tr>
 </thead>
-
-<tbody>
-</tbody>
+<tbody id="tableBody"></tbody>
 </table>
 
 </div>
 
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
 <script>
-function ajouterReferent() {
 
-let service = document.getElementById("service").value;
-let zone = document.getElementById("zone").value;
-let poste = document.getElementById("poste").value;
-let referent = document.getElementById("referent").value;
-let fonction = document.getElementById("fonction").value;
+// ⚠️ REMPLACE AVEC TES INFOS FIREBASE
+const firebaseConfig = {
+  apiKey: "XXXX",
+  authDomain: "XXXX",
+  projectId: "XXXX"
+};
 
-if(service === "" || zone === "" || poste === "" || referent === "" || fonction === "") {
-    alert("Remplir tous les champs !");
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// AJOUT
+function ajouter(){
+  if(!nom.value){
+    alert("Veuillez saisir le nom du référent");
     return;
+  }
+
+  db.collection("referents").add({
+    service: service.value,
+    zone: zone.value,
+    poste: poste.value,
+    nom: nom.value,
+    fonction: fonction.value
+  });
+
+  nom.value="";
+  fonction.value="";
 }
 
-let table = document.getElementById("table").getElementsByTagName("tbody")[0];
+// AFFICHAGE TEMPS RÉEL
+db.collection("referents").onSnapshot(snapshot=>{
+  tableBody.innerHTML="";
+  snapshot.forEach(doc=>{
+    const d = doc.data();
 
-let row = table.insertRow();
+    tableBody.innerHTML += `
+    <tr>
+      <td>${d.service}</td>
+      <td>${d.zone}</td>
+      <td>${d.poste}</td>
+      <td>${d.nom}</td>
+      <td>${d.fonction}</td>
+      <td><button class="deleteBtn" onclick="supprimer('${doc.id}')">Supprimer</button></td>
+    </tr>`;
+  });
+});
 
-row.innerHTML = `
-<td>${service}</td>
-<td>${zone}</td>
-<td>${poste}</td>
-<td>${referent}</td>
-<td>${fonction}</td>
-<td>
-<button class="edit-btn" onclick="modifier(this)">Modifier</button>
-<button class="delete-btn" onclick="supprimer(this)">Supprimer</button>
-</td>
-`;
-
-document.getElementById("referent").value = "";
-document.getElementById("fonction").value = "";
+// SUPPRESSION
+function supprimer(id){
+  if(confirm("Supprimer ce référent ?")){
+    db.collection("referents").doc(id).delete();
+  }
 }
 
-function supprimer(btn) {
-let row = btn.parentNode.parentNode;
-row.remove();
-}
-
-function modifier(btn) {
-let row = btn.parentNode.parentNode;
-
-let service = row.cells[0].innerText;
-let zone = row.cells[1].innerText;
-let poste = row.cells[2].innerText;
-let referent = row.cells[3].innerText;
-let fonction = row.cells[4].innerText;
-
-// remettre dans le formulaire
-document.getElementById("service").value = service;
-document.getElementById("zone").value = zone;
-document.getElementById("poste").value = poste;
-document.getElementById("referent").value = referent;
-document.getElementById("fonction").value = fonction;
-
-// supprimer ligne pour modification
-row.remove();
-}
 </script>
 
 </body>
