@@ -1,231 +1,182 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Gestion des Référents</title>
-
-<style>
-body {
-  font-family: Arial;
-  background:#f4f6f9;
-  margin:0;
-}
-
-.header {
-  background:#2c3e50;
-  color:white;
-  padding:20px;
-  text-align:center;
-  font-size:22px;
-  border-radius:10px;
-  margin:20px;
-}
-
-.container {
-  width:95%;
-  margin:auto;
-}
-
-.form {
-  background:#f0f0f0;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:20px;
-}
-
-label {
-  font-size:12px;
-  color:#555;
-}
-
-input, select {
-  padding:10px;
-  border:1px solid #ccc;
-  border-radius:5px;
-  width:160px;
-}
-
-button {
-  background:#2e6edc;
-  color:white;
-  border:none;
-  padding:10px 15px;
-  border-radius:5px;
-  cursor:pointer;
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-th {
-  background:#2e6edc;
-  color:white;
-  padding:12px;
-}
-
-td {
-  padding:10px;
-  border:1px solid #ddd;
-  text-align:center;
-}
-
-.deleteBtn {
-  background:red;
-  color:white;
-  padding:5px 10px;
-  border:none;
-  cursor:pointer;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Référents</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; }
+        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; font-size: 22px; border-radius: 10px; margin: 20px; }
+        .container { width: 95%; margin: auto; }
+        .form { background: #f0f0f0; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        label { font-size: 12px; color: #555; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 160px; margin-bottom: 5px; }
+        button { background: #2e6edc; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #1a54b8; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        th { background: #2e6edc; color: white; padding: 12px; }
+        td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        .deleteBtn { background: #e74c3c; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px; }
+        .deleteBtn:hover { background: #c0392b; }
+    </style>
 </head>
-
 <body>
 
 <div class="header">
-🏭 Gestion des Référents - Direction Usine
+    🏭 Gestion des Référents - Direction Usine
 </div>
 
 <div class="container">
+    <div class="form">
+        <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+            <div>
+                <label>Service</label><br>
+                <select id="service">
+                    <option>Production</option>
+                    <option>Maintenance</option>
+                    <option>Magasin</option>
+                    <option>Méthode</option>
+                    <option>QHSE</option>
+                </select>
+            </div>
+            <div>
+                <label>Zone</label><br>
+                <select id="zone">
+                    <option>Préparation</option>
+                    <option>Monobloc</option>
+                    <option>Séchoir</option>
+                    <option>Empilage</option>
+                    <option>Dépilage</option>
+                    <option>Four</option>
+                    <option>Emballage</option>
+                    <option>Toutes les zones</option>
+                </select>
+            </div>
+            <div>
+                <label>Poste</label><br>
+                <select id="poste">
+                    <option>Opérateur</option>
+                    <option>Technicien</option>
+                    <option>Technicien TPM</option>
+                    <option>Agent magasin</option>
+                    <option>Chef d'équipe</option>
+                    <option>Superviseur</option>
+                    <option>Responsable</option>
+                </select>
+            </div>
+            <div>
+                <label>Nom référent</label><br>
+                <input type="text" id="nom" placeholder="Nom référent">
+            </div>
+            <div>
+                <label>Fonction</label><br>
+                <input type="text" id="fonction" placeholder="Fonction">
+            </div>
+            <div>
+                <button onclick="ajouter()">Ajouter</button>
+            </div>
+        </div>
+    </div>
 
-<div class="form">
-
-<div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
-
-<div>
-<label>Service</label><br>
-<select id="service">
-<option>Production</option>
-<option>Maintenance</option>
-<option>Magasin</option>
-<option>Méthode</option>
-<option>QHSE</option>
-</select>
+    <table>
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Zone</th>
+                <th>Poste</th>
+                <th>Référent</th>
+                <th>Fonction</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
 </div>
 
-<div>
-<label>Zone</label><br>
-<select id="zone">
-<option>Préparation</option>
-<option>Monobloc</option>
-<option>Séchoir</option>
-<option>Empilage</option>
-<option>Dépilage</option>
-<option>Four</option>
-<option>Emballage</option>
-<option>Toutes les zones</option>
-</select>
-</div>
-
-<div>
-<label>Poste</label><br>
-<select id="poste">
-<option>Opérateur</option>
-<option>Technicien</option>
-<option>Technicien TPM</option>
-<option>Agent magasin</option>
-<option>Chef d'équipe</option>
-<option>Superviseur</option>
-<option>Responsable</option>
-</select>
-</div>
-
-<div>
-<label>Nom référent</label><br>
-<input type="text" id="nom" placeholder="Nom référent">
-</div>
-
-<div>
-<label>Fonction</label><br>
-<input type="text" id="fonction" placeholder="Fonction">
-</div>
-
-<div>
-<br>
-<button onclick="ajouter()">Ajouter</button>
-</div>
-
-</div>
-
-</div>
-
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Zone</th>
-<th>Poste</th>
-<th>Référent</th>
-<th>Fonction</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="tableBody"></tbody>
-</table>
-
-</div>
-
-<!-- FIREBASE -->
+<!-- SDK Firebase (Version Compat pour plus de simplicité) -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
+    // Configuration Firebase avec VOS identifiants
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1tmm_9FKqUErPxFg9E4dzqqStHY9wZUw",
+        authDomain: "gestion-des-referents.firebaseapp.com",
+        projectId: "gestion-des-referents",
+        storageBucket: "gestion-des-referents.firebasestorage.app",
+        messagingSenderId: "153790405569",
+        appId: "1:153790405569:web:4bd6ae33aaad965728ed40",
+        measurementId: "G-21NMRDHBY9"
+    };
 
-// ⚠️ REMPLACE AVEC TES INFOS FIREBASE
-const firebaseConfig = {
-  apiKey: "XXXX",
-  authDomain: "XXXX",
-  projectId: "XXXX"
-};
+    // Initialisation
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    // Éléments HTML
+    const tableBody = document.getElementById('tableBody');
+    const nomInput = document.getElementById('nom');
+    const fonctionInput = document.getElementById('fonction');
+    const serviceSelect = document.getElementById('service');
+    const zoneSelect = document.getElementById('zone');
+    const posteSelect = document.getElementById('poste');
 
-// AJOUT
-function ajouter(){
-  if(!nom.value){
-    alert("Veuillez saisir le nom du référent");
-    return;
-  }
+    // Fonction pour AJOUTER un référent
+    function ajouter() {
+        const nom = nomInput.value.trim();
+        const fonction = fonctionInput.value.trim();
 
-  db.collection("referents").add({
-    service: service.value,
-    zone: zone.value,
-    poste: poste.value,
-    nom: nom.value,
-    fonction: fonction.value
-  });
+        if (!nom) {
+            alert("Veuillez saisir le nom du référent");
+            return;
+        }
 
-  nom.value="";
-  fonction.value="";
-}
+        db.collection("referents").add({
+            service: serviceSelect.value,
+            zone: zoneSelect.value,
+            poste: posteSelect.value,
+            nom: nom,
+            fonction: fonction,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            nomInput.value = "";
+            fonctionInput.value = "";
+        })
+        .catch((error) => {
+            console.error("Erreur lors de l'ajout: ", error);
+            alert("Erreur: Vérifiez que vous avez bien activé Firestore en 'Mode Test'");
+        });
+    }
 
-// AFFICHAGE TEMPS RÉEL
-db.collection("referents").onSnapshot(snapshot=>{
-  tableBody.innerHTML="";
-  snapshot.forEach(doc=>{
-    const d = doc.data();
+    // Affichage en TEMPS RÉEL
+    db.collection("referents").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        tableBody.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const d = doc.data();
+            const row = `
+                <tr>
+                    <td>${d.service}</td>
+                    <td>${d.zone}</td>
+                    <td>${d.poste}</td>
+                    <td>${d.nom}</td>
+                    <td>${d.fonction}</td>
+                    <td><button class="deleteBtn" onclick="supprimer('${doc.id}')">Supprimer</button></td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    });
 
-    tableBody.innerHTML += `
-    <tr>
-      <td>${d.service}</td>
-      <td>${d.zone}</td>
-      <td>${d.poste}</td>
-      <td>${d.nom}</td>
-      <td>${d.fonction}</td>
-      <td><button class="deleteBtn" onclick="supprimer('${doc.id}')">Supprimer</button></td>
-    </tr>`;
-  });
-});
-
-// SUPPRESSION
-function supprimer(id){
-  if(confirm("Supprimer ce référent ?")){
-    db.collection("referents").doc(id).delete();
-  }
-}
-
+    // Fonction pour SUPPRIMER
+    function supprimer(id) {
+        if (confirm("Voulez-vous vraiment supprimer ce référent ?")) {
+            db.collection("referents").doc(id).delete()
+            .catch((error) => {
+                console.error("Erreur lors de la suppression: ", error);
+            });
+        }
+    }
 </script>
 
 </body>
