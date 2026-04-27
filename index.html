@@ -1,184 +1,646 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Gestion des Référents</title>
+
     <style>
+
         body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; }
-        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; font-size: 22px; border-radius: 10px; margin: 20px; }
+
+        .header { background: #2c3e50; color: white; padding: 20px;
+text-align: center; font-size: 22px; border-radius: 10px; margin:
+20px; }
+
         .container { width: 95%; margin: auto; }
-        .form { background: #f0f0f0; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+
+        .form { background: #f0f0f0; padding: 15px; border-radius:
+10px; margin-bottom: 20px; }
+
         label { font-size: 12px; color: #555; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 160px; margin-bottom: 5px; }
-        button { background: #2e6edc; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+
+        input, select { padding: 10px; border: 1px solid #ccc;
+border-radius: 5px; width: 160px; margin-bottom: 5px; }
+
+        button { background: #2e6edc; color: white; border: none;
+padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+
         button:hover { background: #1a54b8; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+
+        table { width: 100%; border-collapse: collapse; background:
+white; border-radius: 8px; overflow: hidden; }
+
         th { background: #2e6edc; color: white; padding: 12px; }
+
         td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+
         .deleteBtn { background: #e74c3c; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px; }
+
         .deleteBtn:hover { background: #c0392b; }
+
+        .editBtn { background: #f39c12; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px; margin-right:
+5px; }
+
+        .editBtn:hover { background: #e67e22; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left:
+0; top: 0; width: 100%; height: 100%; background-color:
+rgba(0,0,0,0.4); }
+
+        .modal-content { background-color: #fefefe; margin: 5% auto;
+padding: 20px; border: 1px solid #888; border-radius: 10px; width:
+400px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+        .close { color: #aaa; float: right; font-size: 28px;
+font-weight: bold; cursor: pointer; }
+
+        .close:hover { color: black; }
+
+        .modal-form { display: flex; flex-direction: column; gap: 10px; }
+
+        .modal-form label { margin-top: 10px; }
+
+        .modal-form input, .modal-form select { width: 100%; padding:
+10px; border: 1px solid #ccc; border-radius: 5px; }
+
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px;
+justify-content: flex-end; }
+
+        .modal-buttons button { padding: 10px 20px; }
+
+        .cancelBtn { background: #95a5a6; }
+
+        .cancelBtn:hover { background: #7f8c8d; }
+
+        .saveBtn { background: #27ae60; }
+
+        .saveBtn:hover { background: #229954; }
+
     </style>
+
 </head>
+
 <body>
 
+
+
 <div class="header">
+
     🏭 Gestion des Référents - Direction Usine
+
 </div>
+
+
 
 <div class="container">
+
     <div class="form">
+
         <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+
             <div>
+
                 <label>Service</label><br>
+
                 <select id="service">
+
                     <option>Production</option>
+
                     <option>Maintenance</option>
+
                     <option>Magasin</option>
+
                     <option>Méthode</option>
+
                     <option>QHSE</option>
+
                     <option>TPM</option>
+
                 </select>
+
             </div>
+
             <div>
+
                 <label>Zone</label><br>
+
                 <select id="zone">
+
                     <option>Préparation</option>
+
                     <option>Monobloc</option>
+
                     <option>Séchoir</option>
+
                     <option>Empilage</option>
+
                     <option>Dépilage</option>
+
                     <option>Four</option>
+
                     <option>Emballage</option>
+
                     <option>Toutes les zones</option>
+
                 </select>
+
             </div>
+
             <div>
+
                 <label>Poste</label><br>
+
                 <select id="poste">
+
                     <option>Opérateur</option>
+
                     <option>Technicien</option>
+
                     <option>Technicien TPM</option>
+
                     <option>Agent magasin</option>
+
                     <option>Chef d'équipe</option>
+
                     <option>Superviseur</option>
+
                     <option>Responsable</option>
+
                 </select>
+
             </div>
+
             <div>
+
                 <label>Nom référent</label><br>
+
                 <input type="text" id="nom" placeholder="Nom référent">
+
             </div>
+
             <div>
+
                 <label>Fonction</label><br>
+
                 <input type="text" id="fonction" placeholder="Fonction">
+
             </div>
+
             <div>
+
                 <button onclick="ajouter()">Ajouter</button>
+
             </div>
+
         </div>
+
     </div>
 
+
+
     <table>
+
         <thead>
+
             <tr>
+
                 <th>Service</th>
+
                 <th>Zone</th>
+
                 <th>Poste</th>
+
                 <th>Référent</th>
+
                 <th>Fonction</th>
+
                 <th>Action</th>
+
             </tr>
+
         </thead>
+
         <tbody id="tableBody"></tbody>
+
     </table>
+
 </div>
 
+
+
+<!-- Modal de modification -->
+
+<div id="editModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close" onclick="fermerModal()">&times;</span>
+
+        <h2>Modifier le référent</h2>
+
+        <div class="modal-form">
+
+            <label>Service</label>
+
+            <select id="editService">
+
+                <option>Production</option>
+
+                <option>Maintenance</option>
+
+                <option>Magasin</option>
+
+                <option>Méthode</option>
+
+                <option>QHSE</option>
+
+                <option>TPM</option>
+
+            </select>
+
+            <label>Zone</label>
+
+            <select id="editZone">
+
+                <option>Préparation</option>
+
+                <option>Monobloc</option>
+
+                <option>Séchoir</option>
+
+                <option>Empilage</option>
+
+                <option>Dépilage</option>
+
+                <option>Four</option>
+
+                <option>Emballage</option>
+
+                <option>Toutes les zones</option>
+
+            </select>
+
+            <label>Poste</label>
+
+            <select id="editPoste">
+
+                <option>Opérateur</option>
+
+                <option>Technicien</option>
+
+                <option>Technicien TPM</option>
+
+                <option>Agent magasin</option>
+
+                <option>Chef d'équipe</option>
+
+                <option>Superviseur</option>
+
+                <option>Responsable</option>
+
+            </select>
+
+            <label>Nom référent</label>
+
+            <input type="text" id="editNom" placeholder="Nom référent">
+
+            <label>Fonction</label>
+
+            <input type="text" id="editFonction" placeholder="Fonction">
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button class="cancelBtn" onclick="fermerModal()">Annuler</button>
+
+            <button class="saveBtn" onclick="sauvegarder()">Enregistrer</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
 <!-- SDK Firebase (Version Compat pour plus de simplicité) -->
+
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
+
+
 <script>
+
     // Configuration Firebase avec VOS identifiants
+
     const firebaseConfig = {
+
         apiKey: "AIzaSyC1tmm_9FKqUErPxFg9E4dzqqStHY9wZUw",
+
         authDomain: "gestion-des-referents.firebaseapp.com",
+
         projectId: "gestion-des-referents",
+
         storageBucket: "gestion-des-referents.firebasestorage.app",
+
         messagingSenderId: "153790405569",
+
         appId: "1:153790405569:web:4bd6ae33aaad965728ed40",
+
         measurementId: "G-21NMRDHBY9"
+
     };
 
+
+
     // Initialisation
+
     firebase.initializeApp(firebaseConfig);
+
     const db = firebase.firestore();
 
+
+
     // Éléments HTML
+
     const tableBody = document.getElementById('tableBody');
+
     const nomInput = document.getElementById('nom');
+
     const fonctionInput = document.getElementById('fonction');
+
     const serviceSelect = document.getElementById('service');
+
     const zoneSelect = document.getElementById('zone');
+
     const posteSelect = document.getElementById('poste');
 
+    const editModal = document.getElementById('editModal');
+
+
+
+    // Variable pour stocker l'ID du document en cours de modification
+
+    let currentEditId = null;
+
+    // Stockage temporaire des données pour éviter les problèmes de caractères spéciaux dans le HTML
+
+    let dataCache = {};
+
+
+
     // Fonction pour AJOUTER un référent
+
     function ajouter() {
+
         const nom = nomInput.value.trim();
+
         const fonction = fonctionInput.value.trim();
 
+
+
         if (!nom) {
+
             alert("Veuillez saisir le nom du référent");
+
             return;
+
         }
+
+
 
         db.collection("referents").add({
+
             service: serviceSelect.value,
+
             zone: zoneSelect.value,
+
             poste: posteSelect.value,
+
             nom: nom,
+
             fonction: fonction,
+
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
         })
+
         .then(() => {
+
             nomInput.value = "";
+
             fonctionInput.value = "";
+
         })
+
         .catch((error) => {
+
             console.error("Erreur lors de l'ajout: ", error);
+
             alert("Erreur: Vérifiez que vous avez bien activé Firestore en 'Mode Test'");
+
         });
+
     }
+
+
+
+    // Fonction pour OUVRIR le modal de modification
+
+    function ouvrirModal(id) {
+
+        const d = dataCache[id];
+
+        if (!d) return;
+
+
+
+        currentEditId = id;
+
+        document.getElementById('editService').value = d.service;
+
+        document.getElementById('editZone').value = d.zone;
+
+        document.getElementById('editPoste').value = d.poste;
+
+        document.getElementById('editNom').value = d.nom;
+
+        document.getElementById('editFonction').value = d.fonction;
+
+        editModal.style.display = "block";
+
+    }
+
+
+
+    // Fonction pour FERMER le modal
+
+    function fermerModal() {
+
+        editModal.style.display = "none";
+
+        currentEditId = null;
+
+    }
+
+
+
+    // Fonction pour SAUVEGARDER les modifications
+
+    function sauvegarder() {
+
+        if (!currentEditId) return;
+
+
+
+        const nom = document.getElementById('editNom').value.trim();
+
+
+
+        if (!nom) {
+
+            alert("Veuillez saisir le nom du référent");
+
+            return;
+
+        }
+
+
+
+        db.collection("referents").doc(currentEditId).update({
+
+            service: document.getElementById('editService').value,
+
+            zone: document.getElementById('editZone').value,
+
+            poste: document.getElementById('editPoste').value,
+
+            nom: nom,
+
+            fonction: document.getElementById('editFonction').value
+
+        })
+
+        .then(() => {
+
+            fermerModal();
+
+        })
+
+        .catch((error) => {
+
+            console.error("Erreur lors de la modification: ", error);
+
+            alert("Erreur lors de la modification");
+
+        });
+
+    }
+
+
+
+    // Fermer le modal en cliquant en dehors
+
+    window.onclick = function(event) {
+
+        if (event.target == editModal) {
+
+            fermerModal();
+
+        }
+
+    }
+
+
 
     // Affichage en TEMPS RÉEL
-    db.collection("referents").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+
+    db.collection("referents").orderBy("timestamp",
+"desc").onSnapshot((snapshot) => {
+
         tableBody.innerHTML = "";
+
+        dataCache = {}; // Réinitialiser le cache
+
+
+
         snapshot.forEach((doc) => {
+
             const d = doc.data();
+
+            const id = doc.id;
+
+            dataCache[id] = d; // Stocker dans le cache
+
+
+
             const row = `
+
                 <tr>
+
                     <td>${d.service}</td>
+
                     <td>${d.zone}</td>
+
                     <td>${d.poste}</td>
+
                     <td>${d.nom}</td>
+
                     <td>${d.fonction}</td>
-                    <td><button class="deleteBtn" onclick="supprimer('${doc.id}')">Supprimer</button></td>
+
+                    <td>
+
+                        <button class="editBtn"
+onclick="ouvrirModal('${id}')">Modifier</button>
+
+                        <button class="deleteBtn"
+onclick="supprimer('${id}')">Supprimer</button>
+
+                    </td>
+
                 </tr>
+
             `;
+
             tableBody.innerHTML += row;
+
         });
+
     });
 
+
+
     // Fonction pour SUPPRIMER
+
     function supprimer(id) {
+
         if (confirm("Voulez-vous vraiment supprimer ce référent ?")) {
+
             db.collection("referents").doc(id).delete()
+
             .catch((error) => {
+
                 console.error("Erreur lors de la suppression: ", error);
+
             });
+
         }
+
     }
+
 </script>
 
+
+
 </body>
+
 </html>
